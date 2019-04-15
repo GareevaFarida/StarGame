@@ -44,7 +44,6 @@ public class MenuScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         hero.pos.add(v);
-
         if (hero.isMe(pointOfDestination)) {
             v.setZero();
             hero.pos.set(pointOfDestination);
