@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 
 import screen.MenuScreen;
 
-public class StarGame extends Game {
+public class StarGame1 extends Game {
 
     @Override
     public void create() {
