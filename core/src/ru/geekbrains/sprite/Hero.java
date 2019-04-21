@@ -1,11 +1,9 @@
-package sprite;
+package ru.geekbrains.sprite;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
-import base.Sprite;
-import math.Rect;
+import ru.geekbrains.base.Sprite;
+import ru.geekbrains.math.Rect;
 
 public class Hero extends Sprite {
 

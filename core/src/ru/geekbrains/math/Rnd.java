@@ -1,4 +1,4 @@
-package math;
+package ru.geekbrains.math;
 
 import java.util.Random;
 
