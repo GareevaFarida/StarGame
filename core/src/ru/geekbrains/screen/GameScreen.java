@@ -8,11 +8,17 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.geekbrains.base.BaseScreen;
+import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
 import ru.geekbrains.pool.EnemyPool;
 import ru.geekbrains.sprite.Background;
+import ru.geekbrains.sprite.Bullet;
+import ru.geekbrains.sprite.Enemy;
 import ru.geekbrains.sprite.MainShip;
 import ru.geekbrains.sprite.Star;
 import ru.geekbrains.utils.EnemyGenerator;
@@ -77,7 +83,32 @@ public class GameScreen extends BaseScreen {
     }
 
     private void checkCollisions() {
-
+        for (Enemy enemy : enemyPool.getActiveObjects()) {
+            if (enemy.isDestroyed()) continue;
+            //столкновение кораблей
+            if (enemy.pos.cpy().sub(mainShip.pos).len() <= 0.1) {
+                enemy.destroy();
+                mainShip.destroy();
+            }
+            //попадение пуль
+            List<Bullet> copyOfBulletPull = new ArrayList<Bullet>();
+            copyOfBulletPull.addAll(bulletPool.getActiveObjects());
+            for (Bullet bullet : copyOfBulletPull) {
+                if (bullet.getOwner() == mainShip) {
+                    if (enemy.isMe(bullet.pos)) {
+                        enemy.lostALife();
+                        if (enemy.isDead()) {
+                            enemy.destroy();
+                        }
+                    }
+                } else if (mainShip.isMe(bullet.pos)) {
+                    mainShip.lostALife();
+                    if (mainShip.isDead()) {
+                        mainShip.destroy();
+                    }
+                }
+            }
+        }
     }
 
     private void freeAllDestroyedSprites() {
@@ -98,6 +129,7 @@ public class GameScreen extends BaseScreen {
         enemyPool.drawActiveSprites(batch);
         batch.end();
     }
+
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);

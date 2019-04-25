@@ -27,6 +27,7 @@ public class Enemy extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
+        if (isDestroyed()) return;
         if (getTop() <= worldBounds.getTop()) {
             state = State.FIGHT;
             v.set(v0);

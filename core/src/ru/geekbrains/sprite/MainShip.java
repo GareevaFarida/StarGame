@@ -41,6 +41,7 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
+        if (isDestroyed()) return;
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
             reloadTimer = 0f;

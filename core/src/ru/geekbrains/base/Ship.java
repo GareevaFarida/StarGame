@@ -54,4 +54,19 @@ public class Ship extends Sprite {
         bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage);
         shootSound.play();
     }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        //TODO это неправильно! Пули, вылетевшие до гибели корабля, не должны исчезать!
+        bulletPool.dispose();
+    }
+
+    public void lostALife() {
+        hp--;
+    }
+
+    public boolean isDead() {
+        return hp <= 0;
+    }
 }
