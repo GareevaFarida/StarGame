@@ -40,6 +40,7 @@ public class GameScreen extends BaseScreen {
     private Sound bulletSound;
 
     private EnemyGenerator enemyGenerator;
+    private List<Bullet> copyOfBulletPull = new ArrayList<Bullet>();
 
     @Override
     public void show() {
@@ -90,8 +91,8 @@ public class GameScreen extends BaseScreen {
                 enemy.destroy();
                 mainShip.destroy();
             }
-            //попадение пуль
-            List<Bullet> copyOfBulletPull = new ArrayList<Bullet>();
+            //попадание пуль
+            copyOfBulletPull.clear();
             copyOfBulletPull.addAll(bulletPool.getActiveObjects());
             for (Bullet bullet : copyOfBulletPull) {
                 if (bullet.getOwner() == mainShip) {
