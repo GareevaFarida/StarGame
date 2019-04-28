@@ -1,5 +1,6 @@
 package ru.geekbrains.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -27,7 +28,7 @@ import ru.geekbrains.utils.EnemyGenerator;
 public class GameScreen extends BaseScreen {
 
 
-    private enum State {PLAYING, PAUSE, GAME_OVER}
+    private enum State {PLAYING, PAUSE, GAME_OVER, NEW_GAME}
 
     private State state;
 
@@ -50,31 +51,41 @@ public class GameScreen extends BaseScreen {
     private EnemyGenerator enemyGenerator;
     private GameOver gameOver;
     private ButtonNewGame buttonNewGame;
-    
+    private Game game;
+
+    public GameScreen(Game game) {
+        this.game = game;
+    }
+
+    public void setStateNewGame() {
+        state = State.NEW_GAME;
+    }
 
     @Override
     public void show() {
         super.show();
-        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-        music.setLooping(true);
-        music.play();
-        laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
-        bg = new Texture("textures/bg.png");
-        background = new Background(new TextureRegion(bg));
-        atlas = new TextureAtlas("textures/mainAtlas.tpack");
-        starList = new Star[64];
-        for (int i = 0; i < starList.length; i++) {
-            starList[i] = new Star(atlas);
+        if (!isANewGame()) {
+            music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+            music.setLooping(true);
+            laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+            bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+            music.play();
+            bg = new Texture("textures/bg.png");
+            background = new Background(new TextureRegion(bg));
+            atlas = new TextureAtlas("textures/mainAtlas.tpack");
+            starList = new Star[64];
+            for (int i = 0; i < starList.length; i++) {
+                starList[i] = new Star(atlas);
+            }
+            gameOver = new GameOver(atlas, worldBounds);
+            buttonNewGame = new ButtonNewGame(atlas, gameOver, game, this);
         }
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosionSound);
         mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
         enemyPool = new EnemyPool(bulletPool, explosionPool, bulletSound, worldBounds, mainShip);
         enemyGenerator = new EnemyGenerator(atlas, enemyPool, worldBounds);
-        gameOver = new GameOver(atlas, worldBounds);
-        buttonNewGame = new ButtonNewGame(atlas, gameOver);
         state = State.PLAYING;
     }
 
@@ -207,6 +218,8 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void dispose() {
+        System.out.println("DISPOSE GAMESCREEN " + state);
+        if (isANewGame()) return;
         super.dispose();
         bg.dispose();
         atlas.dispose();
@@ -217,6 +230,10 @@ public class GameScreen extends BaseScreen {
         laserSound.dispose();
         bulletSound.dispose();
         explosionSound.dispose();
+    }
+
+    private boolean isANewGame() {
+        return state == State.NEW_GAME;
     }
 
     @Override
@@ -264,4 +281,5 @@ public class GameScreen extends BaseScreen {
         }
         return false;
     }
+
 }
