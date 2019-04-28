@@ -17,12 +17,15 @@ import ru.geekbrains.pool.EnemyPool;
 import ru.geekbrains.pool.ExplosionPool;
 import ru.geekbrains.sprite.Background;
 import ru.geekbrains.sprite.Bullet;
+import ru.geekbrains.sprite.ButtonNewGame;
 import ru.geekbrains.sprite.Enemy;
+import ru.geekbrains.sprite.GameOver;
 import ru.geekbrains.sprite.MainShip;
 import ru.geekbrains.sprite.Star;
 import ru.geekbrains.utils.EnemyGenerator;
 
 public class GameScreen extends BaseScreen {
+
 
     private enum State {PLAYING, PAUSE, GAME_OVER}
 
@@ -45,6 +48,9 @@ public class GameScreen extends BaseScreen {
     private Sound explosionSound;
 
     private EnemyGenerator enemyGenerator;
+    private GameOver gameOver;
+    private ButtonNewGame buttonNewGame;
+    
 
     @Override
     public void show() {
@@ -67,6 +73,8 @@ public class GameScreen extends BaseScreen {
         mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
         enemyPool = new EnemyPool(bulletPool, explosionPool, bulletSound, worldBounds, mainShip);
         enemyGenerator = new EnemyGenerator(atlas, enemyPool, worldBounds);
+        gameOver = new GameOver(atlas, worldBounds);
+        buttonNewGame = new ButtonNewGame(atlas, gameOver);
         state = State.PLAYING;
     }
 
@@ -158,6 +166,10 @@ public class GameScreen extends BaseScreen {
             enemyPool.drawActiveSprites(batch);
         }
         explosionPool.drawActiveSprites(batch);
+        if (state == State.GAME_OVER) {
+            gameOver.draw(batch);
+            buttonNewGame.draw(batch);
+        }
         batch.end();
     }
 
@@ -170,6 +182,10 @@ public class GameScreen extends BaseScreen {
         }
         if (state == State.PLAYING) {
             mainShip.resize(worldBounds);
+        }
+        if (state == State.GAME_OVER) {
+            gameOver.resize(worldBounds);
+            buttonNewGame.resize(worldBounds);
         }
     }
 
@@ -221,16 +237,30 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        if (state == State.PLAYING) {
-            mainShip.touchDown(touch, pointer);
+        switch (state) {
+            case PLAYING: {
+                mainShip.touchDown(touch, pointer);
+                break;
+            }
+            case GAME_OVER: {
+                buttonNewGame.touchDown(touch, pointer);
+                break;
+            }
         }
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        if (state == State.PLAYING) {
-            mainShip.touchUp(touch, pointer);
+        switch (state) {
+            case PLAYING: {
+                mainShip.touchUp(touch, pointer);
+                break;
+            }
+            case GAME_OVER: {
+                buttonNewGame.touchUp(touch, pointer);
+                break;
+            }
         }
         return false;
     }
