@@ -7,18 +7,21 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
+import ru.geekbrains.pool.ExplosionPool;
 
 public class Enemy extends Ship {
 
     private enum State {DESCENT, FIGHT}
+
     private State state;
     private Vector2 descentV;
 
     private MainShip mainShip;
 
-    public Enemy(BulletPool bulletPool, Sound shootSound, Rect worldBounds, MainShip mainShip) {
+    public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, Rect worldBounds, MainShip mainShip) {
         this.mainShip = mainShip;
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
         this.worldBounds = worldBounds;
         this.shootSound = shootSound;
         this.descentV = new Vector2(0, -0.3f);
@@ -27,7 +30,6 @@ public class Enemy extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (isDestroyed()) return;
         if (getTop() <= worldBounds.getTop()) {
             state = State.FIGHT;
             v.set(v0);
@@ -39,8 +41,9 @@ public class Enemy extends Ship {
                 shoot();
             }
         }
-        if (isOutside(worldBounds)) {
+        if (getBottom() < worldBounds.getBottom()) {
             destroy();
+            mainShip.damage(damage);
         }
     }
 
@@ -67,5 +70,13 @@ public class Enemy extends Ship {
         v.set(descentV);
         reloadTimer = reloadInterval;
         state = State.DESCENT;
+    }
+
+    public boolean isBulletCollision(Rect bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > getTop()
+                || bullet.getTop() < pos.y
+        );
     }
 }
