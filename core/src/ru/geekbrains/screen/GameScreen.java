@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -98,7 +99,7 @@ public class GameScreen extends BaseScreen {
         font = new Font("font/font.fnt", "font/font.png");
         font.setFontSize(0.03f);
         medicineKitPool = new MedicineKitPool(worldBounds,mainShip);
-        medicineKitGenerator = new MedicineKitGenerator(medKitImg,medicineKitPool,mainShip);
+        medicineKitGenerator = new MedicineKitGenerator(medKitImg,medicineKitPool,mainShip,font);
         state = State.PLAYING;
     }
 

@@ -42,7 +42,10 @@ public class MainShip extends Ship {
         flushDestroy();
         hp = HP;
         pos.x = worldBounds.pos.x;
+        setBottom(worldBounds.getBottom() + 0.05f);
+        v.setZero();
     }
+
 
     @Override
     public void resize(Rect worldBounds) {
@@ -66,6 +69,14 @@ public class MainShip extends Ship {
             setLeft(worldBounds.getLeft());
             stop();
         }
+        if (getTop() > worldBounds.getTop()) {
+            setTop(worldBounds.getTop());
+            stop();
+        }
+        if (getBottom() < worldBounds.getBottom()) {
+            setBottom(worldBounds.getBottom());
+            stop();
+        }
     }
 
     public boolean keyDown(int keycode) {
@@ -80,10 +91,12 @@ public class MainShip extends Ship {
                 pressedRight = true;
                 moveRight();
                 break;
+            case Input.Keys.W:
             case Input.Keys.UP:
                 pressedUp = true;
                 moveUp();
                 break;
+            case Input.Keys.S:
             case Input.Keys.DOWN:
                 pressedDown = true;
                 moveDown();

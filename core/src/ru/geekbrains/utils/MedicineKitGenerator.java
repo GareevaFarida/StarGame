@@ -16,11 +16,13 @@ public class MedicineKitGenerator {
     private Vector2 v = new Vector2(0f, -0.1f);
     private MainShip mainShip;
     private static final int HP_MIN = 9;
+    private Font font;
 
-    public MedicineKitGenerator(Texture img, MedicineKitPool medicineKitPool, MainShip mainShip) {
+    public MedicineKitGenerator(Texture img, MedicineKitPool medicineKitPool, MainShip mainShip, Font font) {
         this.medicineKitPool = medicineKitPool;
         this.textureReg = new TextureRegion[]{new TextureRegion(img)};
         this.mainShip = mainShip;
+        this.font = font;
     }
 
     public void generate(float delta) {
@@ -34,7 +36,8 @@ public class MedicineKitGenerator {
             kit.set(textureReg,
                     10,
                     v,
-                    0.1f);
+                    0.1f,
+                    font);
         }
     }
 }
