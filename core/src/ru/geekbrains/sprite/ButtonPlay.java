@@ -26,6 +26,6 @@ public class ButtonPlay extends ScaledTouchUpButton {
 
     @Override
     protected void action() {
-        game.setScreen(new GameScreen(game));
+        game.setScreen(new GameScreen());
     }
 }

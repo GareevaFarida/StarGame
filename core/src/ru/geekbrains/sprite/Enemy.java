@@ -14,8 +14,7 @@ public class Enemy extends Ship {
     private enum State {DESCENT, FIGHT}
 
     private State state;
-    private Vector2 descentV;
-
+    private static Vector2 descentV = new Vector2(0, -0.3f);
     private MainShip mainShip;
 
     public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, Rect worldBounds, MainShip mainShip) {
@@ -24,7 +23,6 @@ public class Enemy extends Ship {
         this.explosionPool = explosionPool;
         this.worldBounds = worldBounds;
         this.shootSound = shootSound;
-        this.descentV = new Vector2(0, -0.3f);
     }
 
     @Override
