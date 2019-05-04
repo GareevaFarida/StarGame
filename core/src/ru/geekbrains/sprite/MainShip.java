@@ -9,6 +9,7 @@ import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
 import ru.geekbrains.pool.ExplosionPool;
+import ru.geekbrains.screen.GameScreen;
 
 public class MainShip extends Ship {
 
@@ -23,7 +24,13 @@ public class MainShip extends Ship {
     private int rightPointer = INVALID_POINTER;
     private int leftPointer = INVALID_POINTER;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound) {
+    private GameScreen gameScreen;
+
+    public MainShip(TextureAtlas atlas,
+                    BulletPool bulletPool,
+                    ExplosionPool explosionPool,
+                    Sound shootSound,
+                    GameScreen gameScreen) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
@@ -36,6 +43,7 @@ public class MainShip extends Ship {
         this.damage = 1;
         this.hp = HP;
         this.v0.set(0.5f, 0);
+        this.gameScreen = gameScreen;
     }
 
     public void reset() {
@@ -80,6 +88,10 @@ public class MainShip extends Ship {
     }
 
     public boolean keyDown(int keycode) {
+        pressedDown = false;
+        pressedUp = false;
+        pressedLeft = false;
+        pressedRight = false;
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
@@ -214,5 +226,11 @@ public class MainShip extends Ship {
 
     private void stop() {
         v.setZero();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        gameScreen.setStateGameOver();
     }
 }

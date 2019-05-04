@@ -58,6 +58,7 @@ public class GameScreen extends BaseScreen {
     private Sound laserSound;
     private Sound bulletSound;
     private Sound explosionSound;
+    private Sound medKitUseSound;
 
     private EnemyGenerator enemyGenerator;
     private MedicineKitGenerator medicineKitGenerator;
@@ -80,6 +81,8 @@ public class GameScreen extends BaseScreen {
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        medKitUseSound = Gdx.audio.newSound(Gdx.files.internal("sounds/medKitUse.mp3"));
+
         bg = new Texture("textures/bg.png");
         background = new Background(new TextureRegion(bg));
         medKitImg = new Texture("textures/medicine_kit.png");
@@ -87,7 +90,7 @@ public class GameScreen extends BaseScreen {
         starList = new TrackingStar[64];
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(atlas, explosionSound);
-        mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound);
+        mainShip = new MainShip(atlas, bulletPool, explosionPool, laserSound, this);
         for (int i = 0; i < starList.length; i++) {
             starList[i] = new TrackingStar(atlas, mainShip.getV());
         }
@@ -98,8 +101,8 @@ public class GameScreen extends BaseScreen {
         newGame = new NewGame(atlas, this);
         font = new Font("font/font.fnt", "font/font.png");
         font.setFontSize(0.03f);
-        medicineKitPool = new MedicineKitPool(worldBounds,mainShip);
-        medicineKitGenerator = new MedicineKitGenerator(medKitImg,medicineKitPool,mainShip,font);
+        medicineKitPool = new MedicineKitPool(worldBounds, mainShip,explosionPool);
+        medicineKitGenerator = new MedicineKitGenerator(medKitImg, medicineKitPool, mainShip, font);
         state = State.PLAYING;
     }
 
@@ -140,13 +143,12 @@ public class GameScreen extends BaseScreen {
             if (enemy.pos.dst(mainShip.pos) < minDist) {
                 enemy.destroy();
                 mainShip.destroy();
-                state = State.GAME_OVER;
                 return;
             }
         }
 
         List<Bullet> bulletList = bulletPool.getActiveObjects();
-
+        List<MedicineKit> medicineKitList = medicineKitPool.getActiveObjects();
         for (Bullet bullet : bulletList) {
             if (bullet.isDestroyed()) {
                 continue;
@@ -165,27 +167,31 @@ public class GameScreen extends BaseScreen {
                         return;
                     }
                 }
+                for (MedicineKit medKit : medicineKitList) {
+                    if (medKit.isBulletCollision(bullet)) {
+                        medKit.decrementHp();
+                        if(medKit.isDestroyed()){
+                            medKit.boom();
+                        }
+                        bullet.destroy();
+                        return;
+                    }
+                    float minDist = medKit.getHalfHeight() + mainShip.getHalfWidth();
+                    if (mainShip.pos.dst(medKit.pos) <= minDist) {
+                        mainShip.setHp(mainShip.getHp() + medKit.getHp());
+                        medKit.destroy();
+                        medKitUseSound.play(1f);
+                        return;
+                    }
+                }
             } else {
                 if (mainShip.isBulletCollision(bullet)) {
                     mainShip.damage(bullet.getDamage());
-                    if (mainShip.isDestroyed()) {
-                        state = State.GAME_OVER;
-                    }
                     bullet.destroy();
                     return;
                 }
             }
         }
-       List<MedicineKit> medicineKitList = medicineKitPool.getActiveObjects();
-        for (MedicineKit medicineKit : medicineKitList) {
-          float minDist = medicineKit.getHalfHeight()+mainShip.getHalfWidth();
-          if(mainShip.pos.dst(medicineKit.pos)<=minDist){
-              mainShip.setHp(mainShip.getHp()+medicineKit.getHp());
-              System.out.println("В АПТЕЧКЕ БЫЛО "+medicineKit.getHp()+" ЖИЗНЕЙ");
-              medicineKit.destroy();
-          }
-        }
-
     }
 
     private void freeAllDestroyedSprites() {
@@ -265,6 +271,7 @@ public class GameScreen extends BaseScreen {
         laserSound.dispose();
         bulletSound.dispose();
         explosionSound.dispose();
+        medKitUseSound.dispose();
         font.dispose();
     }
 
@@ -316,5 +323,9 @@ public class GameScreen extends BaseScreen {
         enemyPool.freeAllActiveSprites();
         explosionPool.freeAllActiveSprites();
         medicineKitPool.freeAllActiveSprites();
+    }
+
+    public void setStateGameOver(){
+        state = State.GAME_OVER;
     }
 }

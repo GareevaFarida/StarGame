@@ -1,5 +1,6 @@
 package ru.geekbrains.sprite;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +9,7 @@ import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
 import ru.geekbrains.pool.ExplosionPool;
+import ru.geekbrains.screen.GameScreen;
 
 public class Enemy extends Ship {
 
@@ -17,7 +19,11 @@ public class Enemy extends Ship {
     private static Vector2 descentV = new Vector2(0, -0.3f);
     private MainShip mainShip;
 
-    public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound, Rect worldBounds, MainShip mainShip) {
+    public Enemy(BulletPool bulletPool,
+                 ExplosionPool explosionPool,
+                 Sound shootSound,
+                 Rect worldBounds,
+                 MainShip mainShip) {
         this.mainShip = mainShip;
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;

@@ -8,15 +8,17 @@ import ru.geekbrains.sprite.MedicineKit;
 public class MedicineKitPool extends SpritesPool<MedicineKit> {
     private Rect worldBounds;
     private MainShip mainShip;
+    private ExplosionPool explosionPool;
 
-    public MedicineKitPool(Rect worldBounds, MainShip mainShip) {
+    public MedicineKitPool(Rect worldBounds, MainShip mainShip, ExplosionPool explosionPool) {
         this.worldBounds = worldBounds;
         this.mainShip = mainShip;
+        this.explosionPool = explosionPool;
     }
 
     @Override
     protected MedicineKit newObject() {
-        return new MedicineKit(mainShip,worldBounds);
+        return new MedicineKit(mainShip, worldBounds, explosionPool);
     }
 
     @Override
