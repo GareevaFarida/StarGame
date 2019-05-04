@@ -180,7 +180,7 @@ public class GameScreen extends BaseScreen {
                     if (mainShip.pos.dst(medKit.pos) <= minDist) {
                         mainShip.setHp(mainShip.getHp() + medKit.getHp());
                         medKit.destroy();
-                        medKitUseSound.play(1f);
+                        medKitUseSound.play();
                         return;
                     }
                 }
