@@ -2,25 +2,16 @@ package ru.geekbrains.sprite;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-import ru.geekbrains.base.ScaledTouchUpButton;
-import ru.geekbrains.math.Rect;
+import ru.geekbrains.base.Sprite;
 
-public class GameOver extends ScaledTouchUpButton {
+public class GameOver extends Sprite {
 
-    public GameOver(TextureAtlas atlas,Rect worldBounds) {
+    private static final float HEIGHT = 0.07f;
+    private static final float BOTTOM_MARGIN = 0.009f;
+
+    public GameOver(TextureAtlas atlas) {
         super(atlas.findRegion("message_game_over"));
-        setHeightProportion(0.08f);
-        setTop(worldBounds.getTop()+0.2f);
-    }
-
-    @Override
-    public void resize(Rect worldBounds) {
-        super.resize(worldBounds);
-        setTop(worldBounds.getTop()+0.2f);
-    }
-
-    @Override
-    protected void action() {
-
+        setHeightProportion(HEIGHT);
+        setBottom(BOTTOM_MARGIN);
     }
 }

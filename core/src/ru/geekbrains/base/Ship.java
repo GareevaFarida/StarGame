@@ -9,6 +9,7 @@ import ru.geekbrains.pool.BulletPool;
 import ru.geekbrains.pool.ExplosionPool;
 import ru.geekbrains.sprite.Bullet;
 import ru.geekbrains.sprite.Explosion;
+import ru.geekbrains.utils.ExplosionType;
 
 public class Ship extends Sprite {
 
@@ -81,8 +82,20 @@ public class Ship extends Sprite {
         hp = 0;
     }
 
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
     private void boom() {
         Explosion explosion = explosionPool.obtain();
-        explosion.set(this.getHeight(), this.pos);
+        explosion.set(this.getHeight(), this.pos, ExplosionType.SHIP);
+    }
+
+    public Vector2 getV() {
+        return v;
     }
 }
